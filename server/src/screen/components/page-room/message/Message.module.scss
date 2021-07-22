@@ -1,0 +1,24 @@
+.message {
+    display: flex;
+
+    .profile {
+        margin-right: 8px;
+
+        img {
+            box-shadow: 0 2px 16px 0 hsla(0, 0%, 0%, 0.1);
+            border-radius: 100%;
+            background: #fff;
+            width: 50px;
+            height: 50px;   
+        }
+    }
+
+    .text {
+        .username {
+            margin-bottom: 4px;
+        }
+
+        flex: 1;
+        word-break: break-all;
+    }
+}

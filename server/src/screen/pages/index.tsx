@@ -6,7 +6,7 @@ import {
 
 import {
     Logo,
-    RoomInput,
+    InputRoom,
 } from '@components/page-index';
 
 import { roomState } from '@state/room'
@@ -24,7 +24,7 @@ export default function Home() {
 
     return (
         <>
-            <RoomInput
+            <InputRoom
                 value={roomName}
                 placeholder="Input the room name"
                 onChange={(e) => setRoomName(e.target.value)}

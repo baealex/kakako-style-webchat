@@ -1,10 +1,10 @@
-import styles from './RoomInput.module.scss';
+import styles from './InputRoom.module.scss';
 import classNames from 'classnames/bind';
 const cn = classNames.bind(styles);
 
 import { useCallback } from 'react';
 
-export interface RoomInputProps {
+export interface InputRoomProps {
     value: string;
     placeholder?: string;
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -12,7 +12,7 @@ export interface RoomInputProps {
     buttonText: string;
 }
 
-export function RoomInput(props: RoomInputProps) {
+export function InputRoom(props: InputRoomProps) {
     const handleClick = useCallback(() => {
         if (props.onClick) {
             props.onClick();

@@ -1,2 +1,2 @@
 export * from './logo';
-export * from './room-input';
+export * from './input-room';

@@ -1,10 +1,10 @@
-import { State } from './global'
+import SharedState from 'bstate';
 
 interface RoomState {
     room: string;
 }
 
-class Room extends State<RoomState> {
+class Room extends SharedState<RoomState> {
     constructor() {
         super();
 

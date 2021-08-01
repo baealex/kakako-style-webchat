@@ -6,12 +6,7 @@ import { useEffect, useState } from 'react';
 
 import { Card } from '@components/atoms';
 
-// TOOD: socket types로 재활용
-interface Profile {
-    id: number;
-    name: string;
-    image: string;
-}
+import { Profile }  from '@modules/socket';
 
 export interface MessageProps {
     profile?: Profile;

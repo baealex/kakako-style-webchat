@@ -58,7 +58,7 @@ export default function socketManager(io: Server) {
                         text: `😥 ${user.profile.name} 퇴장`,
                     })
                     roomUser.socket.emit('room-infomation', {
-                        users: leftUsers.length,
+                        users: leftUsers.map(user => user.profile),
                     })
                 })
             } else {
@@ -101,7 +101,7 @@ export default function socketManager(io: Server) {
                     text: `🎉 ${user.profile.name} 등장`,
                 })
                 roomUser.socket.emit('room-infomation', {
-                    users: roomUsers.length,
+                    users: roomUsers.map(user => user.profile),
                 })
             })
             roomsMap.set(room, roomUsers)

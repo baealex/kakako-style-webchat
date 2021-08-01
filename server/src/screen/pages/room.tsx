@@ -6,21 +6,13 @@ import {
     useState,
 } from 'react'
 
-import socket from '@modules/socket'
+import socket, { Profile } from '@modules/socket';
 import {
     InputChat,
     Message,
     MessageProps,
     RoomInfo,
-    RoomInfoProps,
-} from '@components/page-room'
-
-// TOOD: socket types로 재활용
-interface Profile {
-    id: number;
-    name: string;
-    image: string;
-}
+} from '@components/page-room';
 
 export default function Home() {
     const router = useRouter()
@@ -29,9 +21,7 @@ export default function Home() {
 
     const [ _, setProfile ] = useState<Profile | null>()
     const [ messages, setMessages ] = useState<MessageProps[]>([])
-    const [ roomInfo, setRoomInfo ] = useState<RoomInfoProps>({
-        users: 0,
-    });
+    const [ roomUsers, setRoomUsers ] = useState<Profile[]>([]);
     const [ text, setText ] = useState('')
 
     useEffect(() => {
@@ -59,8 +49,10 @@ export default function Home() {
             }))
             window.scrollTo(0, document.body.scrollHeight)
         })
-        socket.on('room-infomation', (infomation: RoomInfoProps) => {
-            setRoomInfo(infomation);
+        socket.on('room-infomation', (infomation: {
+            users: Profile[]
+        }) => {
+            setRoomUsers(infomation.users);
         })
         
         return () => {
@@ -79,7 +71,7 @@ export default function Home() {
     
     return (
         <>
-            <RoomInfo {...roomInfo}/>
+            <RoomInfo users={roomUsers}/>
             <div className="chat-box">
                 {messages.map(message => (
                     <Message {...message}/>

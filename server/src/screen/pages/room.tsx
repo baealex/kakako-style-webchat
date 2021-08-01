@@ -89,7 +89,6 @@ export default function Home() {
                 refer={input}
                 value={text}
                 onChange={(e) => setText(e.target.value)}
-                buttonText="Send"
                 onClick={handleClick}
             />
             <style jsx>{`

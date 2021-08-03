@@ -12,6 +12,7 @@ export interface MessageProps {
     profile?: Profile;
     text: string;
     time: string;
+    isRead: boolean;
 }
 
 export function Message(props: MessageProps) {

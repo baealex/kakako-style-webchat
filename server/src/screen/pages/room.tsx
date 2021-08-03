@@ -1,4 +1,5 @@
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
+import Head from 'next/head';
 import {
     useCallback,
     useEffect,
@@ -6,7 +7,6 @@ import {
     useState,
 } from 'react'
 
-import socket, { Profile } from '@modules/socket';
 import {
     InputChat,
     Message,
@@ -14,13 +14,17 @@ import {
     RoomInfo,
 } from '@components/page-room';
 
+import socket, { Profile } from '@modules/socket';
+
+const notifications: any[] = [];
+
 export default function Home() {
     const router = useRouter()
 
     const input = useRef<HTMLInputElement>(null)
 
-    const [ _, setProfile ] = useState<Profile | null>()
-    const [ messages, setMessages ] = useState<MessageProps[]>([])
+    const [ _, setProfile ] = useState<Profile | null>();
+    const [ messages, setMessages ] = useState<MessageProps[]>([]);
     const [ roomUsers, setRoomUsers ] = useState<Profile[]>([]);
     const [ text, setText ] = useState('')
 
@@ -41,7 +45,8 @@ export default function Home() {
         })
 
         socket.once('assign-username', (profile: Profile) => {
-            setProfile(profile)
+            Notification.requestPermission();
+            setProfile(profile);
         })
 
         socket.on('send-message', (message: MessageProps) => {
@@ -49,8 +54,17 @@ export default function Home() {
             setMessages((prevMessages) => prevMessages.concat({
                 ...message,
                 time: `${time.getHours()}:${time.getMinutes()}`,
-            }))
-            window.scrollTo(0, document.body.scrollHeight)
+                isRead: !document.hidden,
+            }));
+            if (document.hidden) {
+                const notification = new Notification (
+                    message.profile?.name || '',
+                    { body: message.text }
+                );
+                notifications.push(notification);
+                return;
+            }
+            window.scrollTo(0, document.body.scrollHeight);
         })
         
         socket.on('room-infomation', (infomation: {
@@ -58,8 +72,22 @@ export default function Home() {
         }) => {
             setRoomUsers(infomation.users);
         })
+
+        const visibilityChange = () => {
+            if (!document.hidden) {
+                for (const _ in notifications) {
+                    notifications.pop().close();
+                }
+                setMessages((prevMessage) => prevMessage.map(message => ({
+                    ...message,
+                    isRead: true,
+                })));
+            }
+        }
+        document.addEventListener('visibilitychange', visibilityChange, false);
         
         return () => {
+            document.removeEventListener('visibilitychange', visibilityChange, false);
             socket.emit('exit-the-room')
         }
     }, [])
@@ -73,8 +101,17 @@ export default function Home() {
         setText('')
     }, [text])
     
+    const unReadMessageCount = messages.filter(message => !message.isRead).length;
+
     return (
         <>
+            <Head>
+                {unReadMessageCount > 0 && (
+                    <title>
+                        {unReadMessageCount}개의 읽지 않은 메세지
+                    </title>
+                )}
+            </Head>
             <RoomInfo users={roomUsers}/>
             <div className="chat-box">
                 {messages.map(message => (
